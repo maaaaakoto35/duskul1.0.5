@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv)
 {
-    int code = 0;
+    // int code = 0;
     bool runflag = true;
     int ac = 1;
     while (ac < argc) {
@@ -54,5 +54,5 @@ int main(int argc, char **argv)
     // if (mainindex < 0)
     //     abortMessage("no main");
     // code = executeProgram(mainindex);
-    return true;
+    return mainindex;
 }
