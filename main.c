@@ -45,14 +45,14 @@ int main(int argc, char **argv)
     statInitialize();
     symInitialize();
     int mainindex = parseProgram();
-    freeTextBuffer(stdtxin);
-    stdtxin = NULL;
-    idtablesFree();
-    if (!runflag)
-        return code;
+    // freeTextBuffer(stdtxin);
+    // stdtxin = NULL;
+    // idtablesFree();
+    // if (!runflag)
+    //     return code;
 
-    if (mainindex < 0)
-        abortMessage("no main");
-    code = executeProgram(mainindex);
-    return code;
+    // if (mainindex < 0)
+    //     abortMessage("no main");
+    // code = executeProgram(mainindex);
+    return true;
 }
