@@ -77,6 +77,7 @@ expnode *term(void)
         if (s.kind == id_func) {
             int num = functionsTable[s.offset]->params;
             argExpnode *agp = newArgnode(prefix, s.offset, num);
+            fprintf(stderr, "params at term: %d\n", num);
             expressionList(agp->args, num);
             return (expnode *)agp;
         }else if (s.kind == id_proc) {

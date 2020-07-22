@@ -15,7 +15,7 @@ funcinfo *functionsTable[FUNC_TABLE_CAPACITY];
     // 関数、手続きの情報を格納する配列。構文木の根でもある。
 int currentFuncIndex = 0;
 int numberOfFunctions = 0;
-int numberOfStaticVars = 0;
+int numberOfStaticVars = 0;\
 
 // 仮引数列: '(' が読まれてから呼び出される。最後の ')' は読む。
 static int parameter_list(void)
@@ -24,8 +24,17 @@ static int parameter_list(void)
     if (s.token == sym_rpar) // no parameters
         return 0;
 
+    // fprintf(stderr, "kind: %c\n", s.kind);
+    // fprintf(stderr, "token: %d\n", s.token);
+
     int prm = 0;
     for ( ; ; ) {
+        // true -> '_' 次は')'以外NG for 既定値のある引数 前方宣言 fujiwaramakoto
+        if (s.token == sym_us) {
+            s = getItem();
+            prm = prm + 1;
+            return prm;
+        }
         if (s.token != tok_id) abortMessage("no id");
         if (s.kind != id_undefined) abortMessage("w-def param");
         idRecord *ent = s.a.recptr;
@@ -33,8 +42,15 @@ static int parameter_list(void)
         ent->order = prm++;
         if (prm >= PARAM_MAX) abortMessage("many param");
         s = getItemLocal();
-        if (s.token != sym_comma)
-            break;
+        if (s.token == sym_eq) {
+            fprintf(stderr, "!!!!!throw!!!!\n");
+            s = getItemLocal();
+            fprintf(stderr, "currentFunction: at parameter_list %d\n", numberOfFunctions);
+            fprintf(stderr, "value at parameter_list: %ld\n", s.a.value);
+            s = getItem();
+            return prm;
+        } else if (s.token != sym_comma)
+                break;
         s = getItemLocal();
     }
     if (s.token != sym_rpar) abortMessage("no right paren");
@@ -63,6 +79,7 @@ static int func_header(bool isfunc, bool withbody)
         finf->ident = idp->str;
         finf->withbody = withbody;
         finf->rtntype = isfunc;
+        fprintf(stderr, "finf->params: at func_header %d\n", finf->params);
     }else if (s.kind == id_func || s.kind == id_proc) {
         hasproto = true;
         if (s.kind != func_proc)
@@ -83,6 +100,8 @@ static int func_header(bool isfunc, bool withbody)
     resetLocalList();
     blockNestPush(); // pop is called in funcDefine() or funcDeclare()
     int prms = parameter_list();
+    fprintf(stderr, "prms: at func_header %d\n", prms);
+    fprintf(stderr, "finf->params: at func_header %d\n", finf->params);
     if (hasproto) {
         if (finf->params != prms) abortMessageWithToken("wrong proto", &s);
     }else finf->params = prms;

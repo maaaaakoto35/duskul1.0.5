@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv)
 {
-    // int code = 0;
+     int code = 0;
     bool runflag = true;
     int ac = 1;
     while (ac < argc) {
@@ -45,14 +45,14 @@ int main(int argc, char **argv)
     statInitialize();
     symInitialize();
     int mainindex = parseProgram();
-    // freeTextBuffer(stdtxin);
-    // stdtxin = NULL;
-    // idtablesFree();
-    // if (!runflag)
-    //     return code;
+    freeTextBuffer(stdtxin);
+    stdtxin = NULL;
+    idtablesFree();
+    if (!runflag)
+        return code;
 
-    // if (mainindex < 0)
-    //     abortMessage("no main");
-    // code = executeProgram(mainindex);
+    if (mainindex < 0)
+        abortMessage("no main");
+    code = executeProgram(mainindex);
     return mainindex;
 }

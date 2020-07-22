@@ -84,6 +84,7 @@ item fgetItem(TIN *tip, bool current_only) {
     do {
         ch = nextch(tip);
         attr = chAttribute(ch);
+        fprintf(stderr, "ch: %c\n", ch);
     }while (attr == ca_blank);
     switch (attr) {
         case ca_sym:

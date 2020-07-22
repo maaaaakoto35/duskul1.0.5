@@ -26,6 +26,7 @@ static void chechAssignment(idkind_t kind, const char *str)
 
 stnode *assignStatement(item ahead, symset_t terminator)
 {
+    fprintf(stderr, "ahead at assignStatement: %ld\n", ahead.kind);
     chechAssignment(ahead.kind, "assign");
     item s = getItem();
     if (s.token != sym_eq)
