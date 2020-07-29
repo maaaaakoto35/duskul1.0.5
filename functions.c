@@ -15,17 +15,15 @@ funcinfo *functionsTable[FUNC_TABLE_CAPACITY];
     // 関数、手続きの情報を格納する配列。構文木の根でもある。
 int currentFuncIndex = 0;
 int numberOfFunctions = 0;
-int numberOfStaticVars = 0;\
+int numberOfStaticVars = 0;
 
 // 仮引数列: '(' が読まれてから呼び出される。最後の ')' は読む。
-static int parameter_list(void)
+static int parameter_list(int funcindex)
 {
     item s = getItemLocal();
     if (s.token == sym_rpar) // no parameters
         return 0;
 
-    // fprintf(stderr, "kind: %c\n", s.kind);
-    // fprintf(stderr, "token: %d\n", s.token);
 
     int prm = 0;
     for ( ; ; ) {
@@ -43,12 +41,10 @@ static int parameter_list(void)
         if (prm >= PARAM_MAX) abortMessage("many param");
         s = getItemLocal();
         if (s.token == sym_eq) {
-            fprintf(stderr, "!!!!!throw!!!!\n");
             s = getItemLocal();
-            fprintf(stderr, "currentFunction: at parameter_list %d\n", numberOfFunctions);
-            fprintf(stderr, "value at parameter_list: %ld\n", s.a.value);
+            functionsTable[funcindex]->defaultValue = s.a.value;
             s = getItem();
-            return prm;
+            break;
         } else if (s.token != sym_comma)
                 break;
         s = getItemLocal();
@@ -79,7 +75,6 @@ static int func_header(bool isfunc, bool withbody)
         finf->ident = idp->str;
         finf->withbody = withbody;
         finf->rtntype = isfunc;
-        fprintf(stderr, "finf->params: at func_header %d\n", finf->params);
     }else if (s.kind == id_func || s.kind == id_proc) {
         hasproto = true;
         if (s.kind != func_proc)
@@ -99,9 +94,7 @@ static int func_header(bool isfunc, bool withbody)
         abortMessageWithToken("no left paren", &t);
     resetLocalList();
     blockNestPush(); // pop is called in funcDefine() or funcDeclare()
-    int prms = parameter_list();
-    fprintf(stderr, "prms: at func_header %d\n", prms);
-    fprintf(stderr, "finf->params: at func_header %d\n", finf->params);
+    int prms = parameter_list(funcindex);
     if (hasproto) {
         if (finf->params != prms) abortMessageWithToken("wrong proto", &s);
     }else finf->params = prms;

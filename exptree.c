@@ -10,6 +10,14 @@
 #include "abort.h"
 
 
+expnode *defaultValueNode(int defaultValue)
+{
+    expnode *termp = NULL;
+    termp = newExpnode(0, tok_num);
+    termp->v.intvalue = defaultValue;
+    return termp;
+}
+
 expnode *newExpnode(int prefix, int kind)
 {
     assert(kind == tok_id || kind == tok_num || kind == tok_str);
@@ -77,8 +85,7 @@ expnode *term(void)
         if (s.kind == id_func) {
             int num = functionsTable[s.offset]->params;
             argExpnode *agp = newArgnode(prefix, s.offset, num);
-            fprintf(stderr, "params at term: %d\n", num);
-            expressionList(agp->args, num);
+            expressionList(agp->args, num, agp->index);
             return (expnode *)agp;
         }else if (s.kind == id_proc) {
             abortMessageWithToken("not func name", &s);

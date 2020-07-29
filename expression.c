@@ -76,7 +76,7 @@ expnode *strExpression(void)
     return expression();
 }
 
-void expressionList(expnode *xlist[], int args)
+void expressionList(expnode *xlist[], int args, int funcindex)
 {
     item s = getItem();
     if (s.token != sym_lpar)
@@ -86,10 +86,20 @@ void expressionList(expnode *xlist[], int args)
             xlist[i] = expression();
             if (++i >= args) break;
             s = getItem();
-            if (s.token != sym_comma)
-                abortMessageWithToken("wrong arg num", &s);
+            if (s.token != sym_comma) {
+                if (functionsTable[funcindex]->defaultValue != NULL){
+                    fprintf(stderr, "defaultValue at expressionList: %ld\n", functionsTable[funcindex]->defaultValue);
+                    xlist[i] = defaultValueNode(functionsTable[funcindex]->defaultValue);
+                    functionsTable[funcindex]->defaultValue = NULL;
+                    ungetItem(s);
+                    if (++i >= args) goto OUT;
+                } else {
+                    abortMessageWithToken("wrong arg num", &s);
+                }
+            }
         }
     }
+    OUT:
     s = getItem();
     if (s.token != sym_rpar)
         abortMessageWithToken("no right paren", &s);
