@@ -8,7 +8,10 @@
 static int precedence(token_t op)
 {
     switch (op) {
+        
         case sym_or: return 0;
+        case sym_oror:
+        case sym_andand:
         case sym_and: return 1;
         case sym_plus:
         case sym_minus: return 3;
