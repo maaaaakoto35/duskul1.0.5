@@ -1,5 +1,5 @@
 /* Duskul version 0.1.1,  2018.03.13,   Takeshi Ogihara, (C) 2018 */
-/* Duskul version 1.0.5,  2020.07.08 */
+/* Duskul version 1.0.3,  2019.06.01 */
 #include <assert.h>
 #include "getitem.h"
 #include "identifiers.h"
@@ -90,18 +90,10 @@ stnode *inputStatement(void)
     return stp;
 }
 
-// FOR statement: Called just after 'for'-token is read.
-// Caution: In a "FOR" statement, it is undesirable to use
-// the newly definde control var in the initial, last, or
-// step expressions.  Therefore, the var is temporarily set
-// as an undefined id and then set again as a local var
-// just before the codeblock is analyzed.
-
 stnode *forStatement(void)
 {
     stnode *stp = newNode(node_for);
     fornode *fop = (fornode *)stp;
-    idRecord *ent = NULL;
     blockNestPush();
     item s = getItem();
     if (s.token == sym_var) {
@@ -109,8 +101,8 @@ stnode *forStatement(void)
         if (s.token != tok_id)
             abortMessageWithToken("no id", &s);
         assert(s.kind == id_undefined);
-        ent = s.a.recptr;
-        ent->kind = id_undefined; // temporarily
+        idRecord *ent = s.a.recptr;
+        ent->kind = id_local_v;
         ent->order = currentLocalOffset++;
         fop->global = false;
         fop->offset = ent->order;
@@ -140,10 +132,6 @@ stnode *forStatement(void)
     }
     if (s.token != sym_do)
         abortMessageWithToken("no do", &s);
-    if (ent) {
-        // control var of 'FOR'. See the comments above.
-        ent->kind = id_local_v;
-    }
     currentBreakNest++;
     fop->body = codeblock(end_set, false);
     currentBreakNest--;

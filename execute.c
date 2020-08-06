@@ -1,5 +1,5 @@
 /* Duskul version 0.1.5,  2018.08.16,   Takeshi Ogihara, (C) 2018 */
-/* Duskul version 1.0.5,  2019.07.08 */
+/* Duskul version 1.0.3,  2019.06.01 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -64,39 +64,29 @@ static ex_condition execWhile(const whilenode *whp)
 
 static ex_condition execFor(const fornode *frp)
 {
-    ex_condition rtncond = ex_normal;
-    int upper, step;
+    ex_condition r = ex_normal;
+    long upper, step = 1;
     int pos = frp->offset;
     long *target = frp->global ? &globals[pos] : &stack[localbase - pos];
     evaluate(frp->exps[0]);
     *target = stack[sp++];
     evaluate(frp->exps[1]);
-    upper = sp;
-    step = upper - 1;
+    upper = stack[sp++];
     if (frp->exps[2]) {
         evaluate(frp->exps[2]);
-        assert(sp == step);
-        if (stack[step] == 0) { goto RestoreSPAndExit; }
-    }else {
-        stack[--sp] = 1; // default value of step
+        step = stack[sp++];
+        if (step == 0)
+            return ex_normal;
     }
     while (1) {
-        if (stack[step] > 0) {
-            if (*target > stack[upper]) break;
-        }else { // if stack[step] < 0 (note that stack[step] != 0)
-            if (*target < stack[upper]) break;
-        }
-        rtncond = execStatements(frp->body);
-        if (rtncond == ex_return) break;
-        if (rtncond == ex_break) {
-            rtncond = ex_normal;
-            break;
-        }
-        *target += stack[step];
+        if (step > 0 && *target > upper) break;
+        if (step < 0 && *target < upper) break;
+        r = execStatements(frp->body);
+        if (r == ex_return) return ex_return;
+        if (r == ex_break) break;
+        *target += step;
     }
-RestoreSPAndExit:
-    sp += 2;    // upper and step values are removed.
-    return rtncond;
+    return ex_normal;
 }
 
 static ex_condition execStatements(const stnode *stptr)
