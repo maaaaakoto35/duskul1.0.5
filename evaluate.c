@@ -32,6 +32,7 @@ static void applyOperator(int opr) // ++sp by this call
         case sym_lt:    val = BOOL(o1 < o2); break;
         case sym_geq:   val = BOOL(o1 >= o2); break;
         case sym_leq:   val = BOOL(o1 <= o2); break;
+        
         default:
             assert(false); break;
     }

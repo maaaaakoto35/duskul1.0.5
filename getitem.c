@@ -1,5 +1,5 @@
 /* Duskul version 0.1.5,  2018.08.12,   Takeshi Ogihara, (C) 2018 */
-/* Duskul version 1.0.4,  2020.06.23 */
+/* Duskul version 1.0.3,  2019.06.01 */
 #include <stdlib.h>
 #include <assert.h>
 #include "getsymbol.h"
@@ -87,7 +87,7 @@ item fgetItem(TIN *tip, bool current_only) {
     }while (attr == ca_blank);
     switch (attr) {
         case ca_sym:
-            return getsymbol(ch, tip);
+            return getsymbol(ch, tip);//2個目
         case ca_quot:
             s.token = tok_str;
             s.a.value = get_string(tip);
@@ -103,7 +103,6 @@ item fgetItem(TIN *tip, bool current_only) {
     if (isEOF(tip))
         abortMessage("unexp EOF");
     s.token = tok_ILL;
-    abortMessage("illegal character");
     return s;
 }
 

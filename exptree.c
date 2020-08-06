@@ -72,7 +72,7 @@ expnode *term(void)
         // e.g. -( c + 10 ) ,  not( a or z ),  -( not f )
         return newOprnode(prefix, termp, NULL);
     }
-
+    
     if (s.token == tok_id) { // var or func
         if (s.kind == id_func) {
             int num = functionsTable[s.offset]->params;
@@ -91,13 +91,25 @@ expnode *term(void)
         termp->v.varinf = info;
         return termp;
     }
-
+    
     if (s.token == tok_num) {
         termp = newExpnode(prefix, tok_num);
         termp->v.intvalue = s.a.value;
         return termp;
     }
-
+    
     abortMessageWithToken("wrong exp", &s);
+    return termp;
+}
+
+expnode *varTerm(int global, int offset){
+    expnode *termp;
+   // item s;
+    varinfo info;
+    int prifix = 0;//none
+    info.global = global; //BOOL(s.kind == id_static_v);
+    info.offset = offset; //s.offset;
+    termp = newExpnode(prifix, tok_id);
+    termp->v.varinf = info;
     return termp;
 }

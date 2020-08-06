@@ -1,5 +1,5 @@
 /* Duskul version 0.1.5,  2018.08.12,   Takeshi Ogihara, (C) 2018 */
-/* Duskul version 1.0.4,  2020.06.23 */
+/* Duskul version 1.0.0,  2019.03.20 */
 #include <string.h>
 
 static const struct { const char *tag, *localized;
@@ -18,7 +18,6 @@ static const struct { const char *tag, *localized;
     { "no func",        "'func' がありません" },
     { "illegal string", "文字列が不正です" },
     { "illegal statement", "文が不正です" },
-    { "illegal character", "不正な文字が含まれています" },
     { "illegal tail",   "文末に不正な文字があります" },
     { "wrong exp",      "式として正しくない要素が現れました" },
     { "wrong proto",    "サブルーチンの宣言が一致しません" },

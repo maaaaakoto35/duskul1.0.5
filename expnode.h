@@ -13,5 +13,6 @@ expnode *newExpnode(int prefix, int kind);
 expnode *newOprnode(int kind, expnode *o1, expnode *o2);
 argExpnode *newArgnode(int prefix, int funcindex, int argnum);
 expnode *term(void);
+expnode *varTerm(int global, int offset);
 
 #endif /* expnode_h */

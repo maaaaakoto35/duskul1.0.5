@@ -1,5 +1,5 @@
 /* Duskul version 0.1.5,  2018.08.12,   Takeshi Ogihara, (C) 2018 */
-/* Duskul version 1.0.5,  2020.07.08 */
+/* Duskul version 1.0.3,  2019.06.01 */
 #include <stdio.h>
 #include "getitem.h"
 #include "symset.h"
@@ -7,7 +7,7 @@
 #include "statements.h"
 #include "evaluate.h"
 #include "abort.h"
-#define  VERSION    "1.0.5"
+#define  VERSION    "1.0.3"
 
 int main(int argc, char **argv)
 {

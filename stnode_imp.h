@@ -5,6 +5,8 @@
 #include <stdint.h> // int16_t = short, etc.
 #include "stnode.h"
 #include "expnode.h"
+#include "getitem.h"
+
 
 struct _funcinfo {
     const char  *ident;
@@ -19,6 +21,7 @@ struct _assign {                    // assign
     struct _stnode _stnode_common;  // caution!
     uint8_t     global;
     uint16_t    offset;
+    int compope;
     expnode     *expr;
 };
 
