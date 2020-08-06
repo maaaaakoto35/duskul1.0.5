@@ -76,6 +76,15 @@ expnode *strExpression(void)
     return expression();
 }
 
+expnode *defaultVauleExpression(int defaultValue)
+{
+    oppbody opp;
+    opp.nodindex = 0;
+    opp.nodestack[opp.nodindex] = defaultValueNode(defaultValue);
+    oppPutOperator(&opp, 0); // to finish the processing
+    return opp.nodestack[0];
+}
+
 void expressionList(expnode *xlist[], int args, int funcindex)
 {
     item s = getItem();
@@ -87,10 +96,8 @@ void expressionList(expnode *xlist[], int args, int funcindex)
             if (++i >= args) break;
             s = getItem();
             if (s.token != sym_comma) {
-                if (functionsTable[funcindex]->defaultValue != NULL){
-                    fprintf(stderr, "defaultValue at expressionList: %ld\n", functionsTable[funcindex]->defaultValue);
-                    xlist[i] = defaultValueNode(functionsTable[funcindex]->defaultValue);
-                    functionsTable[funcindex]->defaultValue = NULL;
+                if (functionsTable[funcindex]->hasDefaultValue || functionsTable[funcindex]->defaultValue){
+                    xlist[i] = defaultVauleExpression(functionsTable[funcindex]->defaultValue);
                     ungetItem(s);
                     if (++i >= args) goto OUT;
                 } else {

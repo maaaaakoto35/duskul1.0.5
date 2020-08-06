@@ -29,6 +29,7 @@ static int parameter_list(int funcindex)
     for ( ; ; ) {
         // true -> '_' 次は')'以外NG for 既定値のある引数 前方宣言 fujiwaramakoto
         if (s.token == sym_us) {
+            functionsTable[funcindex]->hasDefaultValue = true;
             s = getItem();
             prm = prm + 1;
             return prm;
@@ -42,6 +43,7 @@ static int parameter_list(int funcindex)
         s = getItemLocal();
         if (s.token == sym_eq) {
             s = getItemLocal();
+            fprintf(stderr, "???????defaultValue at parameter_list: %ld\n", s.a.value);
             functionsTable[funcindex]->defaultValue = s.a.value;
             s = getItem();
             break;
