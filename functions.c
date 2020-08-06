@@ -43,7 +43,6 @@ static int parameter_list(int funcindex)
         s = getItemLocal();
         if (s.token == sym_eq) {
             s = getItemLocal();
-            fprintf(stderr, "???????defaultValue at parameter_list: %ld\n", s.a.value);
             functionsTable[funcindex]->defaultValue = s.a.value;
             s = getItem();
             break;
