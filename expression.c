@@ -76,7 +76,16 @@ expnode *strExpression(void)
     return expression();
 }
 
-void expressionList(expnode *xlist[], int args)
+expnode *defaultVauleExpression(int defaultValue)
+{
+    oppbody opp;
+    opp.nodindex = 0;
+    opp.nodestack[opp.nodindex] = defaultValueNode(defaultValue);
+    oppPutOperator(&opp, 0); // to finish the processing
+    return opp.nodestack[0];
+}
+
+void expressionList(expnode *xlist[], int args, int funcindex)
 {
     item s = getItem();
     if (s.token != sym_lpar)
@@ -86,10 +95,18 @@ void expressionList(expnode *xlist[], int args)
             xlist[i] = expression();
             if (++i >= args) break;
             s = getItem();
-            if (s.token != sym_comma)
-                abortMessageWithToken("wrong arg num", &s);
+            if (s.token != sym_comma) {
+                if (functionsTable[funcindex]->hasDefaultValue || functionsTable[funcindex]->defaultValue){
+                    xlist[i] = defaultVauleExpression(functionsTable[funcindex]->defaultValue);
+                    ungetItem(s);
+                    if (++i >= args) goto OUT;
+                } else {
+                    abortMessageWithToken("wrong arg num", &s);
+                }
+            }
         }
     }
+    OUT:
     s = getItem();
     if (s.token != sym_rpar)
         abortMessageWithToken("no right paren", &s);

@@ -12,6 +12,8 @@ struct _funcinfo {
     uint8_t     withbody;    // not prototype
     uint8_t     rtntype;     // 0:proc, 1:func
     int16_t     params;      // number of parameters
+    long        defaultValue; // default value by fujiwaramakoto
+    bool        hasDefaultValue;
     int16_t     localvars;   // number of local variables
 };
 

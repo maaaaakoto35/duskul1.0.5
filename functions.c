@@ -18,14 +18,22 @@ int numberOfFunctions = 0;
 int numberOfStaticVars = 0;
 
 // 仮引数列: '(' が読まれてから呼び出される。最後の ')' は読む。
-static int parameter_list(void)
+static int parameter_list(int funcindex)
 {
     item s = getItemLocal();
     if (s.token == sym_rpar) // no parameters
         return 0;
 
+
     int prm = 0;
     for ( ; ; ) {
+        // true -> '_' 次は')'以外NG for 既定値のある引数 前方宣言 fujiwaramakoto
+        if (s.token == sym_us) {
+            functionsTable[funcindex]->hasDefaultValue = true;
+            s = getItem();
+            prm = prm + 1;
+            return prm;
+        }
         if (s.token != tok_id) abortMessage("no id");
         if (s.kind != id_undefined) abortMessage("w-def param");
         idRecord *ent = s.a.recptr;
@@ -33,8 +41,13 @@ static int parameter_list(void)
         ent->order = prm++;
         if (prm >= PARAM_MAX) abortMessage("many param");
         s = getItemLocal();
-        if (s.token != sym_comma)
+        if (s.token == sym_eq) {
+            s = getItemLocal();
+            functionsTable[funcindex]->defaultValue = s.a.value;
+            s = getItem();
             break;
+        } else if (s.token != sym_comma)
+                break;
         s = getItemLocal();
     }
     if (s.token != sym_rpar) abortMessage("no right paren");
@@ -82,7 +95,7 @@ static int func_header(bool isfunc, bool withbody)
         abortMessageWithToken("no left paren", &t);
     resetLocalList();
     blockNestPush(); // pop is called in funcDefine() or funcDeclare()
-    int prms = parameter_list();
+    int prms = parameter_list(funcindex);
     if (hasproto) {
         if (finf->params != prms) abortMessageWithToken("wrong proto", &s);
     }else finf->params = prms;
