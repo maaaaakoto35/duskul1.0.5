@@ -41,7 +41,7 @@ static void itemToString(char *buffer, const item *p)
             if (t < combined_symbol_0)
                 sprintf(buffer, "[symbol '%c']", (int)p->kind);
             else if (t < reserved_word_0) {
-                static const char *tab[] = { "<=", ">=", "==", "<>" , "+=", "-=", "*=", "/=", "%="};
+                static const char *tab[] = { "<=", ">=", "==", "<>" , "+=", "-=", "*=", "/=", "%=", "&&", "||"};
                 sprintf(buffer, "[symbol '%s']", tab[t - combined_symbol_0]);
             }else if (t < all_normal_symbols) {
                 sprintf(buffer, "[token '%s']", reservedWord(t));

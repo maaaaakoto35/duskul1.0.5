@@ -33,7 +33,8 @@ static void applyOperator(int opr) // ++sp by this call
         case sym_lt:    val = BOOL(o1 < o2); break;
         case sym_geq:   val = BOOL(o1 >= o2); break;
         case sym_leq:   val = BOOL(o1 <= o2); break;
-        
+        case sym_andand:   val = BOOL(!o1); break;
+        case sym_oror:   val = BOOL(o1); break;
         default:
             assert(false); break;
     }
@@ -47,6 +48,23 @@ void evaluate(const expnode *expptr) // --sp by this call
     if (expptr->prefix == ExpTree) { // expression tree
         oprExpnode *opx = (oprExpnode *)expptr;
         evaluate(opx->operand[0]);
+        if(expptr->kind == sym_andand && stack[sp] == 0){
+            return;
+        }
+        if(expptr->kind == sym_andand && stack[sp] != 0 ){
+            ++sp;
+            evaluate(opx->operand[1]);
+            return;
+        }
+        if(expptr->kind == sym_oror && stack[sp] != 0){
+            return;
+        }
+        if(expptr->kind == sym_oror && stack[sp] == 0 ){
+            ++sp;
+            evaluate(opx->operand[1]);
+            return;
+            
+        }
         if (opx->operand[1]) { // binary operators
             evaluate(opx->operand[1]);
             applyOperator(expptr->kind);
