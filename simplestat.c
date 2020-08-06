@@ -7,6 +7,8 @@
 #include "stnode_imp.h"
 #include "expression.h"
 #include "abort.h"
+#include "evaluate.h"
+#include "expnode.h"
 
 static void chechAssignment(idkind_t kind, const char *str)
 {
@@ -27,15 +29,49 @@ static void chechAssignment(idkind_t kind, const char *str)
 stnode *assignStatement(item ahead, symset_t terminator)
 {
     chechAssignment(ahead.kind, "assign");
+    
     item s = getItem();
-    if (s.token != sym_eq)
-        abortMessageWithToken("no equal", &s);
-    expnode *termp = expression();
+    
     stnode *statmp = newNode(node_assign);
     assignnode *ap = (assignnode *)statmp;
-    ap->expr = termp;
-    ap->global = BOOL(ahead.kind == id_static_v);
-    ap->offset = ahead.offset;
+    
+    ap->compope = 0;
+    if(s.token == sym_pluseq || s.token == sym_minuseq ||s.token == sym_asteq || s.token == sym_slseq || s.token == sym_pcnteq){
+        expnode *termcp = varTerm(BOOL(ahead.kind == id_static_v), ahead.offset);
+        expnode *termp = expression();
+        
+        switch (s.token) {
+            case sym_pluseq:
+                ap->expr = newOprnode(sym_plus, termcp, termp);
+                break;
+            case sym_minuseq:
+                ap->expr = newOprnode(sym_minus, termcp, termp);
+                break;
+            case sym_asteq:
+                ap->expr = newOprnode(sym_ast, termcp, termp);
+                break;
+            case sym_slseq:
+                ap->expr = newOprnode(sym_sls, termcp, termp);
+                break;
+            case sym_pcnteq:
+                ap->expr = newOprnode(sym_pcnt, termcp, termp);
+                break;
+            default:
+                break;
+        }
+        ap->global = BOOL(ahead.kind == id_static_v);
+        ap->offset = ahead.offset;
+        
+    }else if(s.token == sym_eq){
+        expnode *termp = expression();
+        ap->expr = termp;
+        ap->global = BOOL(ahead.kind == id_static_v);
+        ap->offset = ahead.offset;
+    }else if (s.token != sym_eq) {
+        abortMessageWithToken("no equal", &s);
+        
+    }
+    
     s = getItem();
     if (!symsetHas(terminator, s.token))
         abortMessageWithToken("illegal tail", &s);
@@ -77,7 +113,7 @@ stnode *inputStatement(void)
     }
     if (s.token != sym_rpar)
         abortMessageWithToken("no right paren", &s);
-
+    
     stnode *stp = newNodeExpand(node_input, args);
     stp->count = args;
     argnode *anp = (argnode *)stp;

@@ -16,7 +16,7 @@ int addLiteralString(const char *s) {
     }
     // 重複する文字列を登録しないようにもできる。現在は順番に複製しているだけ。
     int x = literal_count;
-    literalTable[literal_count++] = strdup(s);
+    literalTable[literal_count++] = strdup(s);//sの複製　文字列へのポインタを返す
     return x;
 }
 
