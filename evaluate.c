@@ -8,6 +8,7 @@
 #include "stnode_imp.h"
 #include "strliteral.h"
 #include "abort.h"
+#include "getsymbol.h"
 
 static void applyOperator(int opr) // ++sp by this call
 {
@@ -117,13 +118,63 @@ void execInput(const argnode *agp, int count)
         varinfo vinfo = agp->p.vlist[i];
         int pos = vinfo.offset;
         long *target = vinfo.global ? &globals[pos] : &stack[localbase - pos];
-        for ( ; ; ) {
-            int n = fscanf(stdin, "%ld", target);
-            if (n == EOF)
-                abortMessageWithString("input eof", "input");
-            if (n >= 1)
-                break;
-            (void)getchar(); // skip a non-numeral char
+        int d=0;
+        long val=0;
+        long val2=0;
+        int ch2=0;
+        ch2 =fgetc(stdin);
+        if(chAttribute(ch2) == ca_alpha|| chAttribute(ch2) == ca_sym){
+            abortMessageWithString("illegal character", "最初は０以上数字");
         }
-    }
-}
+        if (ch2=='0'){
+                d = fgetc(stdin);
+                    if (d == 'x'){
+                        d = fgetc(stdin);
+                        while(chAttribute(d) == ca_digit || chAttribute(d) == ca_alpha){
+                            if (d >='A' && d <= 'F') {
+                                  val2 = d - 'A' + 10;
+                            }
+                              else if (d >='a' && d <= 'f') {
+                                  val2 = d - 'a' + 10;
+                              }
+                              else if(chAttribute(d) == ca_digit){
+                                  val2 = d -'0';
+                               }
+                            else abortMessageWithString("illegal character", "1~9,a~f,A~Fを入力");
+                            val = val * 16 + val2;
+                            d = fgetc(stdin);
+                        }
+                    }else if(chAttribute(d) == ca_digit){
+                        val = (long)(d- '0');
+                        d = fgetc(stdin);
+                        while (chAttribute(d) == ca_digit) {
+                        val = val * 10 + (long)(d - '0');
+                        d = fgetc(stdin);
+                        }
+                     if(chAttribute(d) == ca_alpha || chAttribute(d) == ca_sym){
+                         abortMessageWithString("illegal character", "１０進数で入力");
+                     }
+                    }else if(d == 10){
+                        break;
+                                       }
+                    else if(chAttribute(d) == ca_alpha|| chAttribute(d) == ca_sym){
+                            abortMessageWithString("illegal character", "最初の0の後はxか数字");
+                        }
+                    else abortMessageWithString("illegal character", "16進数は0xから入力");
+                    }
+            else{
+                val = (long)(ch2- '0');
+                 d = fgetc(stdin);
+                 while (chAttribute(d) == ca_digit) {
+                 val = val * 10 + (long)(d - '0');
+                 d = fgetc(stdin);
+                 }
+                if(chAttribute(d) == ca_alpha|| chAttribute(d) == ca_sym){
+                     abortMessageWithString("illegal character", "数字を入力");
+                 }
+                }
+                *target = val;
+            }
+        }
+    
+
