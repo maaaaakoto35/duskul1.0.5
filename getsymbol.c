@@ -70,7 +70,7 @@ long getnumber(int ch, TIN *tip)
                   else if(chAttribute(d) == ca_digit){
                       val2 = d -'0';
                    }
-                  else abortMessageWithString("illegal character", "16進数外");
+                  else abortMessageWithString("illegal character", "1~9,a~f,A~Fを入力");
                       val = val * 16 + val2;
                 d = nextch(tip);
             }
@@ -81,7 +81,17 @@ long getnumber(int ch, TIN *tip)
                 val = val * 10 + (long)(d - '0');
                 d = nextch(tip);
             }
-        }else abortMessageWithString("illegal character", "0xとなっていない");
+                if(chAttribute(d) == ca_alpha || chAttribute(d) == ca_sym){
+                    abortMessageWithString("illegal character", "１０進数");
+                }
+        }
+        else if(d == 10){
+            
+                }
+         else if(chAttribute(d) == ca_alpha|| chAttribute(d) == ca_sym){
+             abortMessageWithString("illegal character", "最初の0の後はxか数字");
+         }
+        else abortMessageWithString("illegal character", "１６進数は0xから");
         }
     else{
         val = (long)(ch - '0');
