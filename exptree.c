@@ -112,11 +112,10 @@ expnode *term(void)
 
 expnode *varTerm(int global, int offset){
     expnode *termp;
-   // item s;
     varinfo info;
     int prifix = 0;//none
-    info.global = global; //BOOL(s.kind == id_static_v);
-    info.offset = offset; //s.offset;
+    info.global = global;
+    info.offset = offset;
     termp = newExpnode(prifix, tok_id);
     termp->v.varinf = info;
     return termp;

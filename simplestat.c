@@ -35,7 +35,6 @@ stnode *assignStatement(item ahead, symset_t terminator)
     stnode *statmp = newNode(node_assign);
     assignnode *ap = (assignnode *)statmp;
     
-    ap->compope = 0;
     if(s.token == sym_pluseq || s.token == sym_minuseq ||s.token == sym_asteq || s.token == sym_slseq || s.token == sym_pcnteq){
         expnode *termcp = varTerm(BOOL(ahead.kind == id_static_v), ahead.offset);
         expnode *termp = expression();
@@ -69,7 +68,6 @@ stnode *assignStatement(item ahead, symset_t terminator)
         ap->offset = ahead.offset;
     }else if (s.token != sym_eq) {
         abortMessageWithToken("no equal", &s);
-        
     }
     
     s = getItem();
