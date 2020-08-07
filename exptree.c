@@ -80,7 +80,7 @@ expnode *term(void)
         // e.g. -( c + 10 ) ,  not( a or z ),  -( not f )
         return newOprnode(prefix, termp, NULL);
     }
-    
+
     if (s.token == tok_id) { // var or func
         if (s.kind == id_func) {
             int num = functionsTable[s.offset]->params;
@@ -99,13 +99,13 @@ expnode *term(void)
         termp->v.varinf = info;
         return termp;
     }
-    
+
     if (s.token == tok_num) {
         termp = newExpnode(prefix, tok_num);
         termp->v.intvalue = s.a.value;
         return termp;
     }
-    
+
     abortMessageWithToken("wrong exp", &s);
     return termp;
 }

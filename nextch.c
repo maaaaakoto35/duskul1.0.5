@@ -6,8 +6,7 @@
 #define MAX_LENGTH_OF_LINE  512
 /**
   ソースからテキストを一行ためておく
- エラーで表示するために蓄える
- 
+  エラーで表示するために蓄える
  */
 struct textinput {
     FILE *fp;

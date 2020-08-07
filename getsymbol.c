@@ -86,8 +86,8 @@ long getnumber(int ch, TIN *tip)
                 }
         }
         else if(d == 10){
-            
-                }
+
+        }
          else if(chAttribute(d) == ca_alpha|| chAttribute(d) == ca_sym){
              abortMessageWithString("illegal character", "最初の0の後はxか数字");
          }
@@ -101,7 +101,6 @@ long getnumber(int ch, TIN *tip)
             d = nextch(tip);
         }
     }
-    
         if (d != EOF) undoch(d, tip);
     return val;
 }
