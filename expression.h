@@ -6,6 +6,6 @@
 /* expression.c */
 expnode *expression(void);
 expnode *strExpression(void);
-void expressionList(expnode *xlist[], int args, int funcindex);
+void expressionList(expnode *xlist[], int args);
 
 #endif /* !__EXPRESSION_H__ */

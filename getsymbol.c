@@ -53,46 +53,13 @@ chattr_t chAttribute(int x)
 
 long getnumber(int ch, TIN *tip)
 {
-    int d=0;
-    long val=0;
-    long val2=0;
-    if (ch=='0'){
+    long val = (long)(ch - '0');
+    int d = nextch(tip);
+    while (chAttribute(d) == ca_digit) {
+        val = val * 10 + (long)(d - '0');
         d = nextch(tip);
-        if (d == 'x'){
-            d = nextch(tip);
-            while(chAttribute(d) == ca_digit || chAttribute(d) == ca_alpha){
-                if (d >='A' && d <= 'F') {
-                      val2 = d - 'A' + 10;
-                }
-                  else if (d >='a' && d <= 'f') {
-                      val2 = d - 'a' + 10;
-                  }
-                  else if(chAttribute(d) == ca_digit){
-                      val2 = d -'0';
-                   }
-                  else abortMessageWithString("illegal character", "16進数外");
-                      val = val * 16 + val2;
-                d = nextch(tip);
-            }
-        }else if(chAttribute(d) == ca_digit){
-            val = (long)(d - '0');
-            d = nextch(tip);
-            while (chAttribute(d) == ca_digit) {
-                val = val * 10 + (long)(d - '0');
-                d = nextch(tip);
-            }
-        }else abortMessageWithString("illegal character", "0xとなっていない");
-        }
-    else{
-        val = (long)(ch - '0');
-        d = nextch(tip);
-        while (chAttribute(d) == ca_digit ) {
-            val = val * 10 + (long)(d - '0');
-            d = nextch(tip);
-        }
     }
-    
-        if (d != EOF) undoch(d, tip);
+    if (d != EOF) undoch(d, tip);
     return val;
 }
 
@@ -103,7 +70,7 @@ item getsymbol(int ch, TIN *tip)
     s.kind = ch; // mainly for debugging
     s.a.value = 0;
 
-    if (ch == '<' || ch == '>' || ch == '=' || ch == '+'|| ch == '-'|| ch == '*'|| ch == '/'|| ch == '%' || ch == '&' || ch == '|') {
+    if (ch == '<' || ch == '>' || ch == '=' || ch == '+' || ch == '-') {
         int nx = nextch(tip);
         if (chAttribute(nx) != ca_sym) {
             if (nx != EOF) undoch(nx, tip);
@@ -124,25 +91,12 @@ item getsymbol(int ch, TIN *tip)
                 if (nx == '=') { s.token = sym_equal; return s; }
                 break;
             case '+':
-                if (nx == '=') { s.token = sym_pluseq; return s; }
+                if (nx == '+') { s.token = sym_inc; return s; }
                 break;
             case '-':
-                if (nx == '=') { s.token = sym_minuseq; return s; }
+                if (nx == '-') { s.token = sym_dec; return s; }
                 break;
-            case '*':
-                if (nx == '=') { s.token = sym_asteq; return s; }
-                break;
-            case '/':
-                if (nx == '=') { s.token = sym_slseq; return s; }
-                break;
-            case '%':
-                if (nx == '=') { s.token = sym_pcnteq; return s; }
-            case '&':
-                if (nx == '&') { s.token = sym_andand; return s; }
-                break;
-            case '|':
-                if (nx == '|') { s.token = sym_oror; return s; }
-                break;
+            
             default: break; // never
         }
         undoch(nx, tip);

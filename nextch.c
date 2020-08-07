@@ -4,11 +4,7 @@
 #include "abort.h"
 
 #define MAX_LENGTH_OF_LINE  512
-/**
-  ソースからテキストを一行ためておく
- エラーで表示するために蓄える
- 
- */
+
 struct textinput {
     FILE *fp;
     unsigned char buf[1024];
@@ -38,9 +34,7 @@ void freeTextBuffer(TIN *tip) {
     fclose(tip->fp);
     free(tip);
 }
-/**
- tipになにか値が入っていれば*fpに
- */
+
 void printTextBuffer(FILE *fp, TIN *tip) {
     if (!isEOF(tip)) {
         const int leng = 64;
@@ -53,10 +47,7 @@ void printTextBuffer(FILE *fp, TIN *tip) {
         // The last character of a line is a NL(0x0a).
     }
 }
-/**
- 最大文字数(511)を超えればエラーを返す。
- 改行する
- */
+
 static int get_new_line(TIN *tip)
 {
     int b, x = 0;

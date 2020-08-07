@@ -90,7 +90,7 @@ static stnode *callStatement(void)
     stp->count = num;
     argnode *anp = (argnode *)stp;
     anp->offset = pr.offset;
-    expressionList(anp->p.xlist, num, anp->offset);
+    expressionList(anp->p.xlist, num);
     return stp;
 }
 

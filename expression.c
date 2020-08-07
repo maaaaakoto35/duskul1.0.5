@@ -8,16 +8,15 @@
 static int precedence(token_t op)
 {
     switch (op) {
-        
         case sym_or: return 0;
-        case sym_oror:
-        case sym_andand:
         case sym_and: return 1;
         case sym_plus:
         case sym_minus: return 3;
         case sym_ast:
         case sym_sls:
         case sym_pcnt: return 4;
+        case sym_inc: return 5;
+        case sym_dec: return 6;
         default: break;
     }
     return 2;   // sym_equal, sym_neq, sym_gt, sym_lt, sym_geq, sym_leq
@@ -79,16 +78,7 @@ expnode *strExpression(void)
     return expression();
 }
 
-expnode *defaultVauleExpression(int defaultValue)
-{
-    oppbody opp;
-    opp.nodindex = 0;
-    opp.nodestack[opp.nodindex] = defaultValueNode(defaultValue);
-    oppPutOperator(&opp, 0); // to finish the processing
-    return opp.nodestack[0];
-}
-
-void expressionList(expnode *xlist[], int args, int funcindex)
+void expressionList(expnode *xlist[], int args)
 {
     item s = getItem();
     if (s.token != sym_lpar)
@@ -98,18 +88,10 @@ void expressionList(expnode *xlist[], int args, int funcindex)
             xlist[i] = expression();
             if (++i >= args) break;
             s = getItem();
-            if (s.token != sym_comma) {
-                if (functionsTable[funcindex]->hasDefaultValue || functionsTable[funcindex]->defaultValue){
-                    xlist[i] = defaultVauleExpression(functionsTable[funcindex]->defaultValue);
-                    ungetItem(s);
-                    if (++i >= args) goto OUT;
-                } else {
-                    abortMessageWithToken("wrong arg num", &s);
-                }
-            }
+            if (s.token != sym_comma)
+                abortMessageWithToken("wrong arg num", &s);
         }
     }
-    OUT:
     s = getItem();
     if (s.token != sym_rpar)
         abortMessageWithToken("no right paren", &s);

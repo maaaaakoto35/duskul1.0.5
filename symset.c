@@ -12,8 +12,8 @@ void symInitialize(void) {
         sym_plus, sym_minus, sym_not, tok_EOD }
     );
     infix_set = symsetCreate((token_t[]){
-        sym_and, sym_or, sym_andand, sym_oror, sym_equal, sym_neq, sym_gt, sym_lt, sym_geq,
-        sym_leq, sym_pluseq, sym_minuseq, sym_asteq, sym_slseq, sym_pcnteq, sym_plus, sym_minus, sym_ast, sym_sls, sym_pcnt, tok_EOD }
+        sym_and, sym_or, sym_equal, sym_neq, sym_gt, sym_lt, sym_geq,
+        sym_leq, sym_plus, sym_minus, sym_ast, sym_sls, sym_pcnt, sym_inc, sym_dec, tok_EOD }
     );
 }
 

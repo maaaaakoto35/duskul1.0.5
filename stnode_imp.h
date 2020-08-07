@@ -5,8 +5,6 @@
 #include <stdint.h> // int16_t = short, etc.
 #include "stnode.h"
 #include "expnode.h"
-#include "getitem.h"
-
 
 struct _funcinfo {
     const char  *ident;
@@ -14,8 +12,6 @@ struct _funcinfo {
     uint8_t     withbody;    // not prototype
     uint8_t     rtntype;     // 0:proc, 1:func
     int16_t     params;      // number of parameters
-    long        defaultValue; // default value by fujiwaramakoto
-    bool        hasDefaultValue;
     int16_t     localvars;   // number of local variables
 };
 
@@ -23,7 +19,6 @@ struct _assign {                    // assign
     struct _stnode _stnode_common;  // caution!
     uint8_t     global;
     uint16_t    offset;
-    int compope;
     expnode     *expr;
 };
 

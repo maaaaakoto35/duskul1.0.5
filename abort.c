@@ -13,9 +13,9 @@
 /// Shorten strings, taking UTF-8 encoding into account.
 const char *shorten(const char *s, int limit)
 {
-    static char buf[SHORTEN_LEN + 8];
-    int i, cc = 0;
-    int lim = (SHORTEN_LEN < limit) ? SHORTEN_LEN : limit;
+    static char buf[SHORTEN_LEN + 8];       //要素数が88個のchar型配列
+    int i, cc = 0;                          //
+    int lim = (SHORTEN_LEN < limit) ? SHORTEN_LEN : limit;  
     for (i = 0; (cc = s[i]) != 0 && (i < lim || (cc & 0xc0) == 0x80); i++)
         buf[i] = cc; /* Refer to the encoding of UTF-8 */
     if (cc)
@@ -41,7 +41,7 @@ static void itemToString(char *buffer, const item *p)
             if (t < combined_symbol_0)
                 sprintf(buffer, "[symbol '%c']", (int)p->kind);
             else if (t < reserved_word_0) {
-                static const char *tab[] = { "<=", ">=", "==", "<>" , "+=", "-=", "*=", "/=", "%=", "&&", "||"};
+                static const char *tab[] = { "<=", ">=", "==", "<>", "++", "--" };
                 sprintf(buffer, "[symbol '%s']", tab[t - combined_symbol_0]);
             }else if (t < all_normal_symbols) {
                 sprintf(buffer, "[token '%s']", reservedWord(t));
@@ -62,9 +62,7 @@ void printItem(const item *p)
 
 /* defined in errmessages.c */
 const char *getErrorMessage(const char *key);
-/**
- エラーメッセジをstderrに出力してプログラムを終了
- */
+
 static void abortMessage_string(const char *msg, const char *str)
 {
     fprintf(stderr, "ERROR: %s", getErrorMessage(msg));

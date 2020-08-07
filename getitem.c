@@ -87,7 +87,7 @@ item fgetItem(TIN *tip, bool current_only) {
     }while (attr == ca_blank);
     switch (attr) {
         case ca_sym:
-            return getsymbol(ch, tip);//2個目
+            return getsymbol(ch, tip);
         case ca_quot:
             s.token = tok_str;
             s.a.value = get_string(tip);
