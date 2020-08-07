@@ -70,7 +70,7 @@ item getsymbol(int ch, TIN *tip)
     s.kind = ch; // mainly for debugging
     s.a.value = 0;
 
-    if (ch == '<' || ch == '>' || ch == '=' || ch == '+' || ch == '-') {
+    if (ch == '<' || ch == '>' || ch == '=') {
         int nx = nextch(tip);
         if (chAttribute(nx) != ca_sym) {
             if (nx != EOF) undoch(nx, tip);
@@ -90,13 +90,6 @@ item getsymbol(int ch, TIN *tip)
             case '=':
                 if (nx == '=') { s.token = sym_equal; return s; }
                 break;
-            case '+':
-                if (nx == '+') { s.token = sym_inc; return s; }
-                break;
-            case '-':
-                if (nx == '-') { s.token = sym_dec; return s; }
-                break;
-            
             default: break; // never
         }
         undoch(nx, tip);

@@ -18,7 +18,7 @@ enum token {
     /* ---- combined symbols ---- */
     combined_symbol_0,
     sym_leq = combined_symbol_0 /* <= */,
-    sym_geq /* >= */, sym_equal /* == */, sym_neq /* <> */, sym_inc /* ++ */, sym_dec /* -- */,
+    sym_geq /* >= */, sym_equal /* == */, sym_neq /* <> */,
     /* ---- the followings are reserved words ---- */
     reserved_word_0,
     sym_and = reserved_word_0,
