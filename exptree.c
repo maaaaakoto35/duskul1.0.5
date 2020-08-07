@@ -12,6 +12,7 @@
 
 expnode *newExpnode(int prefix, int kind)
 {
+    fprintf(stderr, "kind: %c \n", kind);
     assert(kind == tok_id || kind == tok_num || kind == tok_str);
     expnode *xp = malloc(sizeof(expnode));
     xp->kind = kind;
