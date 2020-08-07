@@ -28,7 +28,11 @@ stnode *assignStatement(item ahead, symset_t terminator)
 {
     chechAssignment(ahead.kind, "assign");
     item s = getItem();
-    if (s.token != sym_eq)
+    if (s.token == sym_inc)
+        abortMessageWithToken("increment", &s);
+    else if (s.token == sym_dec)
+        abortMessageWithToken("decrement", &s);
+    else if (s.token != sym_eq)
         abortMessageWithToken("no equal", &s);
     expnode *termp = expression();
     stnode *statmp = newNode(node_assign);

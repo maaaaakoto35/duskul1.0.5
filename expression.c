@@ -15,6 +15,8 @@ static int precedence(token_t op)
         case sym_ast:
         case sym_sls:
         case sym_pcnt: return 4;
+        case sym_inc: return 5;
+        case sym_dec: return 6;
         default: break;
     }
     return 2;   // sym_equal, sym_neq, sym_gt, sym_lt, sym_geq, sym_leq

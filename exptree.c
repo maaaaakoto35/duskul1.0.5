@@ -97,6 +97,12 @@ expnode *term(void)
         termp->v.intvalue = s.a.value;
         return termp;
     }
+    if (s.token == sym_inc){
+        return newExpnode(s.token, s.kind);
+    }
+    if (s.token == sym_dec){
+        return newExpnode(s.token, s.kind);
+    }
 
     abortMessageWithToken("wrong exp", &s);
     return termp;
