@@ -12,7 +12,6 @@
 
 expnode *newExpnode(int prefix, int kind)
 {
-    fprintf(stderr, "kind: %c \n", kind);
     assert(kind == tok_id || kind == tok_num || kind == tok_str);
     expnode *xp = malloc(sizeof(expnode));
     xp->kind = kind;
@@ -90,6 +89,15 @@ expnode *term(void)
         info.offset = s.offset;
         termp = newExpnode(prefix, tok_id);
         termp->v.varinf = info;
+        item s2;
+        s2 = getItem();
+        if (s2.token == sym_inc){
+            termp->v.intvalue = s.a.value + 1;
+        } else if (s2.token == sym_dec) {
+            termp->v.intvalue = s.a.value - 1;
+        } else {
+            ungetItem(s2);
+        }
         return termp;
     }
 
@@ -98,11 +106,24 @@ expnode *term(void)
         termp->v.intvalue = s.a.value;
         return termp;
     }
+
     if (s.token == sym_inc){
-        return newExpnode(s.token, s.kind);
+        termp = newExpnode(s.token, tok_id);
+        item s2;
+        s2 = getItem();
+        if (s2.kind == id_undefined)
+            abortMessageWithToken("undef id", &s);
+        termp->v.intvalue = s2.a.value + 1;
+        return termp;
     }
     if (s.token == sym_dec){
-        return newExpnode(s.token, s.kind);
+        termp = newExpnode(s.token, tok_id);
+        item s2;
+        s2 = getItem();
+        if (s2.kind == id_undefined)
+            abortMessageWithToken("undef id", &s);
+        termp->v.intvalue = s2.a.value - 1;
+        return termp;
     }
 
     abortMessageWithToken("wrong exp", &s);
